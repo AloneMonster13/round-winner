@@ -1,0 +1,16 @@
+round-winner
+│
+├── backend                ← Node / Express API
+│   ├── config
+│   ├── controllers
+│   ├── models
+│   ├── routes
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+│
+├── src                    ← React frontend
+├── public
+├── package.json           ← Frontend package.json
+├── vite.config.ts
+└── index.html
