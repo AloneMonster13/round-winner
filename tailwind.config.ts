@@ -23,6 +23,10 @@ export default {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
         },
+        animation: {
+      "spin-slow": "spin 8s linear infinite",
+      "fade-in": "fadeIn 1s ease-in-out",
+    },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -80,6 +84,10 @@ export default {
             height: "0",
           },
         },
+        fadeIn: {
+        "0%": { opacity: 0, transform: "translateY(20px)" },
+        "100%": { opacity: 1, transform: "translateY(0)" },
+      },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
