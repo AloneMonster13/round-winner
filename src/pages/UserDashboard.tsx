@@ -28,37 +28,29 @@ import {
   Zap
 } from "lucide-react";
 
-/**
- * MODERN RED BULB COMPONENT
- */
+/* ---------------------- Red Bulb Component ---------------------- */
 const RedBulb = ({ className, style, size = "8px" }: { className?: string, style?: React.CSSProperties, size?: string }) => (
   <div 
     className={`relative flex items-center justify-center shrink-0 ${className}`}
     style={{ ...style, width: size, height: size }}
   >
-    {/* Outer Neon Glow */}
     <div className="absolute inset-[-150%] bg-red-600 blur-[10px] rounded-full animate-pulse opacity-40" />
-    {/* Physical Bulb */}
     <div className="h-full w-full bg-red-500 rounded-full border border-red-400 shadow-[0_0_15px_rgba(239,68,68,0.9)]" />
-    {/* White Hot Filament */}
     <div className="absolute h-[35%] w-[35%] bg-white rounded-full blur-[0.5px] shadow-white shadow-sm" />
   </div>
 );
 
+/* ---------------------- Animated Background ---------------------- */
 const AnimatedBackground = () => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden bg-[#050000] pointer-events-none">
-      {/* Dynamic Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-      
-      {/* Randomized High-Tech Bulbs */}
       {[...Array(25)].map((_, i) => {
         const top = Math.random() * 100;
         const left = Math.random() * 100;
-        const size = Math.random() * 8 + 4; // Varying sizes from 4px to 12px
+        const size = Math.random() * 8 + 4;
         const duration = 1.5 + Math.random() * 4;
         const delay = Math.random() * 5;
-
         return (
           <RedBulb
             key={i}
@@ -72,19 +64,19 @@ const AnimatedBackground = () => {
           />
         );
       })}
-
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes flicker {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.1); }
-          51% { opacity: 0.4; }
-          52% { opacity: 1; }
+          0%,100% { opacity:0.3; transform:scale(1);}
+          50% { opacity:1; transform:scale(1.1);}
+          51% { opacity:0.4;}
+          52% { opacity:1;}
         }
       `}} />
     </div>
   );
 };
 
+/* ---------------------- Main User Dashboard ---------------------- */
 export default function UserDashboard() {
   const navigate = useNavigate();
   const email = localStorage.getItem("session");
@@ -154,13 +146,13 @@ export default function UserDashboard() {
               </Button>
             )}
             <div className="flex flex-col">
-               <div className="flex items-center gap-2">
-                 <RedBulb size="10px" className="animate-bounce" />
-                 <h1 className="text-xl font-black uppercase tracking-tighter italic leading-none">
+              <div className="flex items-center gap-2">
+                <RedBulb size="10px" className="animate-bounce" />
+                <h1 className="text-xl font-black uppercase tracking-tighter italic leading-none">
                   {selectedRound ? "Battle Detail" : "Arena Hub"}
                 </h1>
-               </div>
-               {selectedRound && <span className="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-1">{round?.round_name}</span>}
+              </div>
+              {selectedRound && <span className="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-1">{round?.round_name}</span>}
             </div>
           </div>
 
@@ -233,6 +225,7 @@ export default function UserDashboard() {
   );
 }
 
+/* ---------------------- Rounds List ---------------------- */
 function RoundsList({ rounds, onSelect }: any) {
   return (
     <div className="grid gap-4">
@@ -242,9 +235,7 @@ function RoundsList({ rounds, onSelect }: any) {
           onClick={() => onSelect(r._id)}
           className="group cursor-pointer overflow-hidden border border-white/5 bg-white/[0.03] hover:bg-white/[0.07] backdrop-blur-md transition-all duration-500 hover:border-red-600/50 hover:shadow-[0_0_30px_rgba(220,38,38,0.1)] rounded-[1.5rem] relative"
         >
-          {/* Internal Glow on Hover */}
           <div className="absolute inset-0 bg-gradient-to-br from-red-600/0 to-red-600/0 group-hover:from-red-600/[0.05] group-hover:to-transparent transition-all duration-500" />
-          
           <CardContent className="flex items-center justify-between p-5 relative z-10">
             <div className="flex items-center gap-4">
               <div className={`p-4 rounded-2xl transition-all duration-500 ${r.status === 'active' ? 'bg-red-600/10 text-red-500 group-hover:bg-red-600 group-hover:text-white shadow-[0_0_20px_rgba(220,38,38,0.15)]' : 'bg-zinc-900 text-zinc-600'}`}>
@@ -271,6 +262,7 @@ function RoundsList({ rounds, onSelect }: any) {
   );
 }
 
+/* ---------------------- Round Detail ---------------------- */
 function RoundDetail({ roundId, email, competitors, votes, round, onVote }: any) {
   const roundCompetitors = competitors.filter((c: any) => c.round_id === roundId);
   const hasVoted = votes.find((v: any) => v.user_email === email && v.round_id === roundId);
@@ -317,15 +309,24 @@ function RoundDetail({ roundId, email, competitors, votes, round, onVote }: any)
           >
             <CardContent className="flex items-center justify-between p-6">
               <div className="flex items-center gap-5">
+                {/* Competitor Photo */}
                 <div className="relative">
-                   <div className="h-16 w-16 bg-zinc-900 rounded-[1.5rem] flex items-center justify-center font-black text-2xl text-white border border-white/10 group-hover:border-red-600/50 transition-colors">
-                     {c.name.charAt(0)}
-                   </div>
-                   {i === 0 && topVotes > 0 && (
-                     <div className="absolute -top-2 -right-2 bg-red-600 p-1.5 rounded-full shadow-[0_0_15px_red] animate-bounce">
-                       <Trophy className="h-3 w-3 text-white" />
-                     </div>
-                   )}
+                  {c.photo ? (
+                    <img
+                      src={c.photo}
+                      alt={c.name}
+                      className="h-16 w-16 object-cover rounded-[1.5rem] border border-white/10 group-hover:border-red-600/50 transition-colors"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 bg-zinc-900 rounded-[1.5rem] flex items-center justify-center font-black text-2xl text-white border border-white/10 group-hover:border-red-600/50 transition-colors">
+                      {c.name.charAt(0)}
+                    </div>
+                  )}
+                  {i === 0 && topVotes > 0 && (
+                    <div className="absolute -top-2 -right-2 bg-red-600 p-1.5 rounded-full shadow-[0_0_15px_red] animate-bounce">
+                      <Trophy className="h-3 w-3 text-white" />
+                    </div>
+                  )}
                 </div>
 
                 <div>
