@@ -333,9 +333,9 @@ function RoundDetail({ roundId, email, competitors, votes, round, onVote }: any)
                   <h4 className="font-black text-white text-2xl leading-none uppercase italic">{c.name}</h4>
                   <div className="flex items-center gap-2 mt-2">
                     <RedBulb size="6px" />
-                    <p className="text-xs font-black text-red-500 tracking-[0.2em] uppercase">
+                    {/* <p className="text-xs font-black text-red-500 tracking-[0.2em] uppercase">
                       {c.votes} {c.votes === 1 ? 'Power' : 'Powers'}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               </div>
