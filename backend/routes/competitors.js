@@ -3,19 +3,23 @@ import {
   getCompetitors,
   createCompetitor,
   updateCompetitor,
-  deleteCompetitor
+  deleteCompetitor,
+  updateCompetitorPhoto,
 } from "../controllers/competitorsController.js";
-import upload from "../middleware/upload.js";
+import upload from "../middleware/upload.js"; // multer single file handler
 
 const router = express.Router();
 
-// GET competitors
+// GET all competitors
 router.get("/", getCompetitors);
 
-// POST competitor with optional photo
+// POST new competitor (with optional photo)
 router.post("/", upload.single("photo"), createCompetitor);
 
-// UPDATE competitor
+// POST update competitor photo
+router.post("/update-photo/:id", upload.single("photo"), updateCompetitorPhoto);
+
+// PUT update competitor name & round
 router.put("/:id", updateCompetitor);
 
 // DELETE competitor

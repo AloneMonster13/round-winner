@@ -1,14 +1,13 @@
 import multer from "multer";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
+// Temp storage, Cloudinary will upload from this path
+const storage = multer.diskStorage({});
 
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) cb(null, true);
+  else cb(new Error("Only image files are allowed"));
+};
+
+const upload = multer({ storage, fileFilter });
 
 export default upload;

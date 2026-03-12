@@ -61,7 +61,6 @@ export default function AdminDashboard() {
       navigate("/");
       return;
     }
-
     loadData();
   }, []);
 
@@ -101,23 +100,16 @@ export default function AdminDashboard() {
         <Tabs defaultValue="rounds" className="space-y-6">
           <TabsList className="grid w-full max-w-md grid-cols-4">
             <TabsTrigger value="rounds">
-              <LayoutList className="mr-1 h-4 w-4" />
-              Rounds
+              <LayoutList className="mr-1 h-4 w-4" /> Rounds
             </TabsTrigger>
-
             <TabsTrigger value="competitors">
-              <Users className="mr-1 h-4 w-4" />
-              Competitors
+              <Users className="mr-1 h-4 w-4" /> Competitors
             </TabsTrigger>
-
             <TabsTrigger value="results">
-              <Trophy className="mr-1 h-4 w-4" />
-              Results
+              <Trophy className="mr-1 h-4 w-4" /> Results
             </TabsTrigger>
-
             <TabsTrigger value="users">
-              <Users className="mr-1 h-4 w-4" />
-              Users
+              <Users className="mr-1 h-4 w-4" /> Users
             </TabsTrigger>
           </TabsList>
 
@@ -126,11 +118,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="competitors">
-            <CompetitorsTab
-              rounds={rounds}
-              competitors={competitors}
-              reload={loadData}
-            />
+            <CompetitorsTab rounds={rounds} competitors={competitors} reload={loadData} />
           </TabsContent>
 
           <TabsContent value="results">
@@ -160,22 +148,16 @@ function RoundsTab({ rounds, reload }: any) {
     setStatus("active");
     setDialogOpen(true);
   };
-
   const openEdit = (r: any) => {
     setEdit(r);
     setName(r.round_name);
     setStatus(r.status);
     setDialogOpen(true);
   };
-
   const save = async () => {
     if (!name.trim()) return;
-
-    if (edit)
-      await API.put(`/rounds/${edit._id}`, { round_name: name, status });
-    else
-      await API.post("/rounds", { round_name: name, status });
-
+    if (edit) await API.put(`/rounds/${edit._id}`, { round_name: name, status });
+    else await API.post("/rounds", { round_name: name, status });
     setDialogOpen(false);
     reload();
   };
@@ -184,10 +166,8 @@ function RoundsTab({ rounds, reload }: any) {
     <div className="space-y-4">
       <div className="flex justify-between">
         <h2 className="text-lg font-semibold">Manage Rounds</h2>
-
         <Button onClick={openAdd}>
-          <Plus className="mr-1 h-4 w-4" />
-          Add Round
+          <Plus className="mr-1 h-4 w-4" /> Add Round
         </Button>
       </div>
 
@@ -198,17 +178,11 @@ function RoundsTab({ rounds, reload }: any) {
               <span>{r.round_name}</span>
               <Badge>{r.status}</Badge>
             </div>
-
             <div className="flex gap-1">
               <Button variant="ghost" size="icon" onClick={() => openEdit(r)}>
                 <Pencil className="h-4 w-4" />
               </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setDeleteId(r._id)}
-              >
+              <Button variant="ghost" size="icon" onClick={() => setDeleteId(r._id)}>
                 <Trash2 className="h-4 w-4 text-red-500" />
               </Button>
             </div>
@@ -222,22 +196,18 @@ function RoundsTab({ rounds, reload }: any) {
             <DialogTitle>{edit ? "Edit" : "Add"} Round</DialogTitle>
           </DialogHeader>
 
-          <Input
-            placeholder="Round name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="closed">Closed</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="space-y-4">
+            <Input placeholder="Round name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="closed">Closed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           <DialogFooter>
             <Button onClick={save}>Save</Button>
@@ -249,14 +219,10 @@ function RoundsTab({ rounds, reload }: any) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Round?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This deletes competitors and votes.
-            </AlertDialogDescription>
+            <AlertDialogDescription>This deletes competitors and votes.</AlertDialogDescription>
           </AlertDialogHeader>
-
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-
             <AlertDialogAction
               onClick={async () => {
                 await API.delete(`/rounds/${deleteId}`);
@@ -274,128 +240,107 @@ function RoundsTab({ rounds, reload }: any) {
 }
 
 /* ----------------------- CompetitorsTab ----------------------- */
-
 function CompetitorsTab({ rounds, competitors, reload }: any) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [edit, setEdit] = useState<any>(null);
   const [name, setName] = useState("");
   const [roundId, setRoundId] = useState("");
-
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const openAdd = () => {
     setEdit(null);
     setName("");
     setRoundId("");
-    setPhoto(null);
-    setPreview(null);
+    setFile(null);
+    setDialogOpen(true);
+  };
+
+  const openEdit = (c: any) => {
+    setEdit(c);
+    setName(c.name);
+    setRoundId(c.round_id);
+    setFile(null);
     setDialogOpen(true);
   };
 
   const save = async () => {
+    if (!name.trim()) return;
 
     const formData = new FormData();
     formData.append("name", name);
     formData.append("round_id", roundId);
+    if (file) formData.append("photo", file);
 
-    if (photo) {
-      formData.append("photo", photo);
+    try {
+      if (edit) {
+        if (file) {
+          await API.post(`/competitors/update-photo/${edit._id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+        } else {
+          await API.put(`/competitors/${edit._id}`, { name, round_id: roundId });
+        }
+      } else {
+        await API.post("/competitors", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+      setDialogOpen(false);
+      reload();
+    } catch (err: any) {
+      alert(err.response?.data?.message || "Error saving competitor");
     }
-
-    if (edit)
-      await API.put(`/competitors/${edit._id}`, formData);
-    else
-      await API.post("/competitors", formData);
-
-    setDialogOpen(false);
-    reload();
   };
 
   return (
     <div className="space-y-4">
       <div className="flex justify-between">
         <h2 className="text-lg font-semibold">Manage Competitors</h2>
-
-        <Button onClick={openAdd}>
-          <Plus className="mr-1 h-4 w-4" />
-          Add
-        </Button>
+        <Button onClick={openAdd}><Plus className="mr-1 h-4 w-4" /> Add</Button>
       </div>
 
       {competitors.map((c: any) => (
         <Card key={c._id}>
-          <CardContent className="flex justify-between p-3">
-
-            <div className="flex items-center gap-3">
-
-              {c.photo && (
-                <img
-                  src={`https://round-winner-api.onrender.com/uploads/${c.photo}`}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              )}
-
+          <CardContent className="flex justify-between items-center p-3">
+            <div className="flex items-center gap-2">
+              {c.photo && <img src={c.photo} alt={c.name} className="w-10 h-10 object-cover rounded" />}
               <span>{c.name}</span>
-
             </div>
-
+            <Button variant="ghost" size="icon" onClick={() => openEdit(c)}>
+              <Pencil className="h-4 w-4" />
+            </Button>
           </CardContent>
         </Card>
       ))}
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
-
           <DialogHeader>
-            <DialogTitle>Add Competitor</DialogTitle>
+            <DialogTitle>{edit ? "Edit" : "Add"} Competitor</DialogTitle>
           </DialogHeader>
 
-          <Input
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <div className="space-y-4">
+            <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Select value={roundId} onValueChange={setRoundId}>
+              <SelectTrigger><SelectValue placeholder="Round" /></SelectTrigger>
+              <SelectContent>
+                {rounds.map((r: any) => (
+                  <SelectItem key={r._id} value={r._id}>{r.round_name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-
-              const file = e.target.files?.[0];
-              if (!file) return;
-
-              setPhoto(file);
-              setPreview(URL.createObjectURL(file));
-
-            }}
-          />
-
-          {preview && (
-            <img
-              src={preview}
-              className="w-20 h-20 rounded-md object-cover"
+            <Input
+              type="file"
+              accept="image/*"
+              name="photo"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
             />
-          )}
-
-          <Select value={roundId} onValueChange={setRoundId}>
-            <SelectTrigger>
-              <SelectValue placeholder="Round" />
-            </SelectTrigger>
-
-            <SelectContent>
-              {rounds.map((r: any) => (
-                <SelectItem key={r._id} value={r._id}>
-                  {r.round_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          </div>
 
           <DialogFooter>
             <Button onClick={save}>Save</Button>
           </DialogFooter>
-
         </DialogContent>
       </Dialog>
     </div>
@@ -403,48 +348,29 @@ function CompetitorsTab({ rounds, competitors, reload }: any) {
 }
 
 /* ----------------------- ResultsTab ----------------------- */
-
 function ResultsTab({ rounds, competitors, votes }: any) {
-
-  const count = (id: string) =>
-    votes.filter((v: any) => v.competitor_id === id).length;
+  const count = (id: string) => votes.filter((v: any) => v.competitor_id === id).length;
 
   return (
     <div className="space-y-6">
-
       {rounds.map((r: any) => {
-
         const rc = competitors.filter((c: any) => c.round_id === r._id);
-
-        const withVotes = rc
-          .map((c: any) => ({ ...c, votes: count(c._id) }))
-          .sort((a, b) => b.votes - a.votes);
+        const withVotes = rc.map((c: any) => ({ ...c, votes: count(c._id) })).sort((a, b) => b.votes - a.votes);
 
         return (
           <Card key={r._id}>
-
             <CardHeader>
               <CardTitle>{r.round_name}</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-2">
-
               {withVotes.map((c: any, i: number) => (
-
                 <div key={c._id} className="flex justify-between">
-
-                  <span>
-                    #{i + 1} {c.name}
-                  </span>
-
+                  <span>#{i + 1} {c.name}</span>
                   <span>{c.votes}</span>
-
                 </div>
-
               ))}
-
             </CardContent>
-
           </Card>
         );
       })}
@@ -453,76 +379,43 @@ function ResultsTab({ rounds, competitors, votes }: any) {
 }
 
 /* ----------------------- UsersTab ----------------------- */
-
 function UsersTab({ users, reload }: any) {
-
   const [email, setEmail] = useState("");
 
   const addUser = async () => {
-
     if (!email.trim()) return;
-
     try {
-
       await API.post("/users", { email: email.trim() });
-
       setEmail("");
       reload();
-
     } catch (err: any) {
-
       alert(err.response?.data?.message || "Error adding user");
-
     }
   };
 
   const deleteUser = async (id: string) => {
-
     if (!confirm("Delete this user?")) return;
-
     await API.delete(`/users/${id}`);
     reload();
   };
 
   return (
     <div className="space-y-4">
-
       <div className="flex gap-2">
-
-        <Input
-          placeholder="User email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <Button onClick={addUser}>
-          Add User
-        </Button>
-
+        <Input placeholder="User email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <Button onClick={addUser}>Add User</Button>
       </div>
 
       {users.map((u: any) => (
-
         <Card key={u._id}>
-
           <CardContent className="flex justify-between p-3">
-
             <span>{u.email}</span>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => deleteUser(u._id)}
-            >
+            <Button variant="ghost" size="icon" onClick={() => deleteUser(u._id)}>
               <Trash2 className="h-4 w-4 text-red-500" />
             </Button>
-
           </CardContent>
-
         </Card>
-
       ))}
-
     </div>
   );
 }
