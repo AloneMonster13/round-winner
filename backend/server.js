@@ -18,6 +18,7 @@ connectDB();
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 // API routes
 app.use("/api/rounds", roundsRoutes);
