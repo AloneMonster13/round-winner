@@ -6,6 +6,7 @@ import {
   updateCompetitor,
   deleteCompetitor
 } from "../controllers/competitorsController.js";
+import upload from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -20,5 +21,7 @@ router.put("/:id", updateCompetitor);
 
 // DELETE competitor
 router.delete("/:id", deleteCompetitor);
+
+router.post("/", upload.single("photo"), createCompetitor);
 
 export default router;
