@@ -1,5 +1,4 @@
 import express from "express";
-
 import {
   getCompetitors,
   createCompetitor,
@@ -13,15 +12,13 @@ const router = express.Router();
 // GET competitors
 router.get("/", getCompetitors);
 
-// POST competitor
-router.post("/", createCompetitor);
+// POST competitor with optional photo
+router.post("/", upload.single("photo"), createCompetitor);
 
 // UPDATE competitor
 router.put("/:id", updateCompetitor);
 
 // DELETE competitor
 router.delete("/:id", deleteCompetitor);
-
-router.post("/", upload.single("photo"), createCompetitor);
 
 export default router;
