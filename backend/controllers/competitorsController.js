@@ -20,23 +20,43 @@ export const getCompetitors = async (req, res) => {
   }
 };
 
-// Add competitor
+// // Add competitor
+// export const createCompetitor = async (req, res) => {
+//   try {
+//     const { name, round_id } = req.body;
+
+//     const competitor = new Competitor({
+//       name,
+//       round_id
+//     });
+
+//     const saved = await competitor.save();
+
+//     res.json(saved);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 export const createCompetitor = async (req, res) => {
   try {
     const { name, round_id } = req.body;
 
     const competitor = new Competitor({
       name,
-      round_id
+      round_id,
+      photo: req.file ? req.file.filename : null
     });
 
     const saved = await competitor.save();
 
     res.json(saved);
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Update competitor
 export const updateCompetitor = async (req, res) => {
